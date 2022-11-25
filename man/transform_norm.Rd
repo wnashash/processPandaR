@@ -7,23 +7,23 @@
 transform_norm(expData, method)
 }
 \arguments{
-\item{expData}{(Object) Name of expression dataframe object generated using readClean()}
+\item{expData}{(Object) Name of expression data frame object generated using read_clean()}
 
 \item{method}{(Character) Either TMM, RLE, or UPQ normalization method from edgeR package}
 }
 \value{
-Returns filtered, normalized expression dataframe
+Returns clean, normalized expression data frame
 }
 \description{
 A simple function to normalize expression data and export
 }
 \details{
-Data is normalized and exported to working directory for pandaPy()/lionessPy()
+Data is normalized and exported to wd for pandaPy()/lionessPy()
 }
 \examples{
 \dontrun{
 library(processPandaR)
-normalized <- transformNorm(expression,"TMM")
+normalized <- transform_norm(expression,"TMM")
 }
 }
 \author{

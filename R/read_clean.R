@@ -1,34 +1,38 @@
-#' @title Filter Expression File
-#' @description A simple function to read and filter expression data
-#' @param file (Character) File path, including file extension
-#' @param geneName (Character) Name used for gene feature in expression data
-#' @details Data is then normalized and exported to working directory, using transformNorm()
-#' @return Returns filtered, raw expression dataframe
+#' @title Clean Gene Expression File
+#' @description A simple function to read and clean gene expression data
+#' @param file (Character) Gene expression file path, including file extension
+#' @param geneName (Character) Name used for gene feature column in gene expression data
+#' @return Returns clean gene expression data frame to global env and writes to wd
 #' @author Walid Nashashibi (\url{https://github.com/wnashash/})
 #' @examples
 #' \dontrun{
 #' library(processPandaR)
-#' expression <- readClean("expression_data.csv","gene_name")
+#' expression <- read_clean("expression.csv","gene")
 #' }
 #' @import tools
 #' @import genefilter
-#' @importFrom data.table fread setDF
+#' @import data.table
+#' @import utils
 #' @export
 #'
 read_clean <- function(file, geneName){
 
-  ext <- file_ext(file)
+  ext <- tools::file_ext(file)
 
-  if(ext == "rda") {
+  if(ext == "rda" | ext == "RData") {
+
     expF <- load(file)
+
   } else {
-    expF <- fread(file,
-                  sep="auto",
-                  header = T,
-                  stringsAsFactors = F)
+
+    expF <- data.table::fread(file,
+                              sep="auto",
+                              header=TRUE,
+                              stringsAsFactors=FALSE)
+
   }
 
-  expData <- setDF(expF)
+  expData <- data.table::setDF(expF)
 
   # Filter rows with empty/duplicate gene name
   expData <- expData[!(is.na(expData[,geneName]) | expData[,geneName]==""), ]
@@ -37,9 +41,14 @@ read_clean <- function(file, geneName){
   expData <- expData[ ,!names(expData) %in% geneName]
 
   # Filter rows with low counts/variance
-  thr <- 0.3
-  expData <- expData[rowSums(expData) >= 10,]
-  expData <- expData[rowSds(as.matrix(expData)) > thr*rowMeans(as.matrix(expData)),]
+  #thr <- 0.3
+  #expData <- expData[rowSums(expData) >= 10,]
+  #expData <- expData[genefilter::rowSds(as.matrix(expData)) > thr*rowMeans(as.matrix(expData)),]
+
+  # Write out results for pandaPy()/lionessPy()
+  utils::write.table(expData, file="expression_test.txt",
+                     row.names=TRUE, col.names=FALSE, sep="\t", quote=F)
 
   return(expData)
+
 }

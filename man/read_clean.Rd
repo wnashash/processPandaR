@@ -2,28 +2,25 @@
 % Please edit documentation in R/read_clean.R
 \name{read_clean}
 \alias{read_clean}
-\title{Filter Expression File}
+\title{Clean Gene Expression File}
 \usage{
 read_clean(file, geneName)
 }
 \arguments{
-\item{file}{(Character) File path, including file extension}
+\item{file}{(Character) Gene expression file path, including file extension}
 
-\item{geneName}{(Character) Name used for gene feature in expression data}
+\item{geneName}{(Character) Name used for gene feature column in gene expression data}
 }
 \value{
-Returns filtered, raw expression dataframe
+Returns clean gene expression data frame to global env and writes to wd
 }
 \description{
-A simple function to read and filter expression data
-}
-\details{
-Data is then normalized and exported to working directory, using transformNorm()
+A simple function to read and clean gene expression data
 }
 \examples{
 \dontrun{
 library(processPandaR)
-expression <- readClean("expression_data.csv","gene_name")
+expression <- read_clean("expression.csv","gene")
 }
 }
 \author{
