@@ -42,28 +42,33 @@ run_pipeline <- function(pipeline,fileGeneExp,colGeneExp,fileMetadata=NULL,colMe
   row.names(expData) <- expData[,colGeneExp]
   expData <- expData[ ,!names(expData) %in% colGeneExp]
 
+  # Filter rows with low counts/variance
+  #thr <- 0.3
+  #expData <- expData[rowSums(expData) >= 10,]
+  #expData <- expData[genefilter::rowSds(as.matrix(expData)) > thr*rowMeans(as.matrix(expData)),]
+
   # Write out results for pandaPy()/lionessPy()
   utils::write.table(expData, file="expression_test.txt",
                      row.names=TRUE, col.names=FALSE, sep="\t", quote=FALSE)
 
-  # Run pandaPy() for use in pipelines
+  # Run pandaPy() for use in pipelines - not wrapping in with statement for now
   resultPanda <- netZooR::pandaPy("expression_test.txt",
                                   "OV_Motif.txt",
                                   "OV_PPI.txt",
                                   save_tmp = FALSE,
                                   modeProcess = "intersection")
-
   if(pipeline == "panda") {
 
     result <- resultPanda$panda
 
   } else if(pipeline == "lioness") {
 
-    resultLion <- netZooR::lionessPy("expression_test.txt",
-                                     "OV_Motif.txt",
-                                     "OV_PPI.txt",
-                                     save_tmp = FALSE,
-                                     modeProcess = "intersection")
+    withr::with_file("expression_test.txt",
+                     {resultLion <- netZooR::lionessPy("expression_test.txt",
+                                                       "OV_Motif.txt",
+                                                       "OV_PPI.txt",
+                                                       save_tmp = FALSE,
+                                                       modeProcess = "intersection")})
 
     result <- resultLion[c(3:ncol(resultLion))]
     colnames(result) <- colnames(expData)
@@ -89,33 +94,39 @@ run_pipeline <- function(pipeline,fileGeneExp,colGeneExp,fileMetadata=NULL,colMe
 
     # Labels (row numbers) that identify baseline group patients
     baselineGrp <- which(metaData[,colMetadata] == compFactors[1])
-    baseGrp <- metaData[baselineGrp,]
+    baseGrp     <- metaData[baselineGrp,]
     geneExpBase <- expData[,baseGrp$SUBJECT_ID] # need to standardize this
 
     utils::write.table(geneExpBase, file="expression_base.txt",
                        row.names=TRUE, col.names=FALSE, sep="\t", quote=FALSE)
 
-    controlPanda <- netZooR::pandaPy("expression_base.txt",
-                                     "OV_Motif.txt",
-                                     "OV_PPI.txt",
-                                     save_tmp = FALSE,
-                                     modeProcess = "intersection")$panda
+    withr::with_file("expression_base.txt",
+                     {controlPanda <- netZooR::pandaPy("expression_base.txt",
+                                                       "OV_Motif.txt",
+                                                       "OV_PPI.txt",
+                                                       save_tmp = FALSE,
+                                                       modeProcess = "intersection")$panda})
 
     # Labels (row numbers) that identify the comparison group patients
-    compareGrp <- which(metaData[,colMetadata] == compFactors[2])
-    compGrp <- metaData[compareGrp,]
+    compareGrp  <- which(metaData[,colMetadata] == compFactors[2])
+    compGrp     <- metaData[compareGrp,]
     geneExpComp <- expData[,compGrp$SUBJECT_ID] # need to standardize this
 
     utils::write.table(geneExpComp, file="expression_comp.txt",
                        row.names=TRUE, col.names=FALSE, sep="\t", quote=FALSE)
 
-    treatPanda   <- netZooR::pandaPy("expression_comp.txt",
-                                     "OV_Motif.txt",
-                                     "OV_PPI.txt",
-                                     save_tmp = FALSE,
-                                     modeProcess = "intersection")$panda
+    withr::with_file("expression_comp.txt",
+                     {treatPanda <- netZooR::pandaPy("expression_comp.txt",
+                                                     "OV_Motif.txt",
+                                                     "OV_PPI.txt",
+                                                     save_tmp = FALSE,
+                                                     modeProcess = "intersection")$panda})
 
-    result <- netZooR::pandaToAlpaca(controlPanda, treatPanda)
+    result <- netZooR::pandaToAlpaca(treatPanda, controlPanda)
+
+  } else {
+
+    stop("Pipeline not supported. Please, choose between panda, lioness, pandaCondor, and pandaAlpaca.", call. = FALSE)
 
   }
 
