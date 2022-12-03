@@ -1,16 +1,16 @@
-#' @title File Prep and Run Pipeline
-#' @description A simple function to prepare data and run pipeline of choice
-#' @param pipeline (Character) Choose between panda, lioness, pandaCondor, and pandaAlpaca
+#' @title Construct NetZooR Pipeline
+#' @description A simple function to prepare data and run algorithm of choice
+#' @param pipeline (Character) Choose between panda, lioness, condor, alpaca, and monster
 #' @param fileGeneExp (Character) File path of gene expression file
 #' @param colGeneExp (Character) Name of gene feature column in expression file
-#' @param fileMetadata (Character) File path of metadata file
+#' @param fileMetadata (Character) File path of metadata file for alpaca and monster
 #' @param colMetadata (Character) Name of treatment feature column in metadata file
-#' @return Returns output of selected pipeline to be used for visualization
+#' @return Returns output of selected algorithm to be used for visualization or second algorithm
 #' @author Walid Nashashibi (\url{https://github.com/wnashash/})
 #' @examples
 #' \dontrun{
 #' library(processPandaR)
-#' alpacaResult <- run_pipeline("pandaAlpaca","expression_test.csv","gene","metadata.csv","RECURRENCE_ANY")
+#' resultAlpaca <- run_pipeline("alpaca","expression_test.csv","gene","metadata.csv","RECURRENCE_ANY")
 #' }
 #' @import tools
 #' @import data.table
@@ -78,7 +78,6 @@ run_pipeline <- function(pipeline,fileGeneExp,colGeneExp,fileMetadata=NULL,colMe
 
     resultCondor <- netZooR::pandaToCondorObject(resultPanda$panda)
 
-    # Not sure if this is the result that should be returned for viz
     result <- netZooR::condorCluster(resultCondor)
 
   } else if(pipeline == "pandaAlpaca") {

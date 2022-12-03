@@ -7,7 +7,7 @@
 #' @examples
 #' \dontrun{
 #' library(processPandaR)
-#' expression <- read_clean("expression.csv","gene")
+#' expression <- read_clean("expression_test.csv","gene")
 #' }
 #' @import tools
 #' @import genefilter
