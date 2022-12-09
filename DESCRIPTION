@@ -4,14 +4,14 @@ Title: AppNetZoo Processing Steps
 Version: 0.1.0
 Author: Walid Nashashibi
 Maintainer: Walid Nashashibi <wnashashibi@argentys.com>
-Description: Expression data filter and normalization processing steps.
+Description: Expression data processing steps.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 URL: https://github.com/wnashash/processPandaR
 BugReports: https://github.com/wnashash/processPandaR/issues
 Imports:
-    tools, data.table, genefilter, edgeR
+    tools, data.table, utils, grDevices, graphics, stats, genefilter, netZooR
 Suggests:
     covr,
     testthat (>= 3.0.0)

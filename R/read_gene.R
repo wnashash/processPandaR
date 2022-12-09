@@ -1,31 +1,30 @@
-#' @title Clean Gene Expression File
+#' @title Read Gene Expression File
 #' @description A simple function to read and clean gene expression data
-#' @param file (Character) Gene expression file path, including file extension
+#' @param path (Character) Gene expression file path, including file extension
 #' @param geneName (Character) Name used for gene feature column in gene expression data
-#' @return Returns clean gene expression data frame to global env and writes to wd
+#' @return Returns clean gene expression data frame to global env and writes to working directory
 #' @author Walid Nashashibi (\url{https://github.com/wnashash/})
 #' @examples
 #' \dontrun{
 #' library(processPandaR)
-#' expression <- read_clean("expression_test.csv","gene")
+#' expression <- read_gene('expression_test.csv','gene')
 #' }
 #' @import tools
-#' @import genefilter
 #' @import data.table
 #' @import utils
 #' @export
 #'
-read_clean <- function(file, geneName){
+read_gene <- function(path, geneName){
 
-  ext <- tools::file_ext(file)
+  ext <- tools::file_ext(path)
 
   if(ext == "rda" | ext == "RData") {
 
-    expF <- load(file)
+    expF <- load(path)
 
   } else {
 
-    expF <- data.table::fread(file,
+    expF <- data.table::fread(path,
                               sep="auto",
                               header=TRUE,
                               stringsAsFactors=FALSE)
@@ -40,15 +39,11 @@ read_clean <- function(file, geneName){
   row.names(expData) <- expData[,geneName]
   expData <- expData[ ,!names(expData) %in% geneName]
 
-  # Filter rows with low counts/variance
-  #thr <- 0.3
-  #expData <- expData[rowSums(expData) >= 10,]
-  #expData <- expData[genefilter::rowSds(as.matrix(expData)) > thr*rowMeans(as.matrix(expData)),]
-
-  # Write out results for pandaPy()/lionessPy()
-  utils::write.table(expData, file="expression_test.txt",
+  # Write out results for further processing
+  utils::write.table(expData, file="expression.txt",
                      row.names=TRUE, col.names=FALSE, sep="\t", quote=F)
 
   return(expData)
 
 }
+
