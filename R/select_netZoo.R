@@ -9,7 +9,7 @@
 #' @author Walid Nashashibi (\url{https://github.com/wnashash/})
 #' @examples
 #' \dontrun{
-#' library(processPandaR)
+#' library(processNetZoo)
 #' expression <- read_gene('expression_test.csv','gene')
 #' design <- split_gene(expression,'metadata.csv','SUBJECT_ID','RECURRENCE_ANY')
 #' result <- select_netZoo('alpaca',expression,'expression_base.txt','expression_comp.txt')

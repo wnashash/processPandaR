@@ -1,6 +1,6 @@
-Package: processPandaR
+Package: processNetZoo
 Type: Package
-Title: AppNetZoo Processing Steps
+Title: appNetZoo Processing Steps
 Version: 0.1.0
 Author: Walid Nashashibi
 Maintainer: Walid Nashashibi <wnashashibi@argentys.com>
@@ -8,8 +8,8 @@ Description: Expression data processing steps.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-URL: https://github.com/wnashash/processPandaR
-BugReports: https://github.com/wnashash/processPandaR/issues
+URL: https://github.com/wnashash/processNetZoo
+BugReports: https://github.com/wnashash/processNetZoo/issues
 Imports:
     tools, data.table, utils, grDevices, graphics, stats, genefilter, netZooR
 Suggests:

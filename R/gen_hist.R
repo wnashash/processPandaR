@@ -6,7 +6,7 @@
 #' @author Walid Nashashibi (\url{https://github.com/wnashash/})
 #' @examples
 #' \dontrun{
-#' library(processPandaR)
+#' library(processNetZoo)
 #' expression <- read_gene('expression_test.csv','gene')
 #' gen_hist(expression,'both')
 #' }
