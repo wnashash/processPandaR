@@ -9,14 +9,14 @@
 #' \dontrun{
 #' library(processNetZoo)
 #' expression <- read_gene('expression_test.csv','gene')
-#' gen_hist(expression,'both')
-#' filtered <- filt_gene(expression,'sum')
+#' generate_histogram(expression,'both')
+#' filtered <- filter_gene(expression,'sum')
 #' }
 #' @import genefilter
 #' @import utils
 #' @export
 #'
-filt_gene <- function(exp,filt,thresh=NULL) {
+filter_gene <- function(exp,filt,thresh=NULL) {
 
   if(filt=='sum') {
 

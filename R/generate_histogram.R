@@ -8,14 +8,14 @@
 #' \dontrun{
 #' library(processNetZoo)
 #' expression <- read_gene('expression_test.csv','gene')
-#' gen_hist(expression,'both')
+#' generate_histogram(expression,'both')
 #' }
 #' @import grDevices
 #' @import graphics
 #' @import stats
 #' @export
 #'
-gen_hist <- function(exp,filt) {
+generate_histogram <- function(exp,filt) {
 
   if(filt=='sum') {
 

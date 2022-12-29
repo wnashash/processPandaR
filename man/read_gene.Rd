@@ -19,7 +19,7 @@ A simple function to read and clean gene expression data
 }
 \examples{
 \dontrun{
-library(processPandaR)
+library(processNetZoo)
 expression <- read_gene('expression_test.csv','gene')
 }
 }

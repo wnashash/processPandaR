@@ -23,10 +23,10 @@ A simple function to split gene expression data, using metadata treatment column
 }
 \examples{
 \dontrun{
-library(processPandaR)
+library(processNetZoo)
 expression <- read_gene('expression_test.csv','gene')
-gen_hist(expression,'both')
-filtered <- filt_gene(expression,'sum')
+generate_histogram(expression,'both')
+filtered <- filter_gene(expression,'sum')
 design <- split_gene(filtered,'metadata.csv','SAMPLE_ID','RECURRENCE_ANY')
 }
 }

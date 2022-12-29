@@ -12,13 +12,13 @@
 #' library(processNetZoo)
 #' expression <- read_gene('expression_test.csv','gene')
 #' design <- split_gene(expression,'metadata.csv','SUBJECT_ID','RECURRENCE_ANY')
-#' result <- select_netZoo('alpaca',expression,'expression_base.txt','expression_comp.txt')
+#' result <- select_NetZoo('alpaca',expression,'expression_base.txt','expression_comp.txt')
 #' }
 #' @import netZooR
 #' @import data.table
 #' @export
 #'
-select_netZoo <- function(alg,exp,base,comp=NULL) {
+select_NetZoo <- function(alg,exp,base,comp=NULL) {
 
   if(alg=='panda') {
 
