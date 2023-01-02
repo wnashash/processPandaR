@@ -4,14 +4,14 @@
 \alias{filter_gene}
 \title{Filter Gene Expression File}
 \usage{
-filter_gene(exp, filt, thresh = NULL)
+filter_gene(geneExp, filter, threshold = NULL)
 }
 \arguments{
-\item{exp}{(Object) Name of expression data frame object generated using read_gene()}
+\item{geneExp}{(Object) Name of expression data frame object generated using read_gene()}
 
-\item{filt}{(Character) Filter option for additional filtering - either sum, var, or both}
+\item{filter}{(Character) Filter option for additional filtering - either sum, var, or both}
 
-\item{thresh}{Numeric value between 0 and 1 for variance filter with default 0.3}
+\item{threshold}{Numeric value between 0 and 1 for variance filter with default 0.1}
 }
 \value{
 Returns filtered gene expression data frame to global env and writes to working directory
@@ -22,7 +22,7 @@ A simple function for additional gene expression filtering
 \examples{
 \dontrun{
 library(processNetZoo)
-expression <- read_gene('expression_test.csv','gene')
+expression <- read_gene('extdata/expression_test.csv','gene')
 generate_histogram(expression,'both')
 filtered <- filter_gene(expression,'sum')
 }

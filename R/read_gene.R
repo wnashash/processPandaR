@@ -7,7 +7,7 @@
 #' @examples
 #' \dontrun{
 #' library(processNetZoo)
-#' expression <- read_gene('expression_test.csv','gene')
+#' expression <- read_gene('extdata/expression_test.csv','gene')
 #' }
 #' @import tools
 #' @import data.table

@@ -4,12 +4,12 @@
 \alias{split_gene}
 \title{Split Gene Expression File Using Metadata}
 \usage{
-split_gene(exp, path, simpleID, treatment)
+split_gene(geneExp, metaPath, simpleID, treatment)
 }
 \arguments{
-\item{exp}{(Object) Name of expression data frame object generated using read_gene() or filt_gene()}
+\item{geneExp}{(Object) Name of expression data frame object generated using read_gene() or filter_gene()}
 
-\item{path}{(Character) Metadata file path}
+\item{metaPath}{(Character) Metadata file path}
 
 \item{simpleID}{(Character) Metadata column with samples/IDs found in gene expression data}
 
@@ -24,10 +24,10 @@ A simple function to split gene expression data, using metadata treatment column
 \examples{
 \dontrun{
 library(processNetZoo)
-expression <- read_gene('expression_test.csv','gene')
+expression <- read_gene('extdata/expression_test.csv','gene')
 generate_histogram(expression,'both')
 filtered <- filter_gene(expression,'sum')
-design <- split_gene(filtered,'metadata.csv','SAMPLE_ID','RECURRENCE_ANY')
+design <- split_gene(filtered,'extdata/metadata.csv','SUBJECT_ID','RECURRENCE_ANY')
 }
 }
 \author{

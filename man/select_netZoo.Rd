@@ -4,16 +4,27 @@
 \alias{select_NetZoo}
 \title{Select NetZooR Algorithm}
 \usage{
-select_NetZoo(alg, exp, base, comp = NULL)
+select_NetZoo(
+  algorithm,
+  geneExp,
+  basePath,
+  compPath = NULL,
+  startSample = 1,
+  endSample = "None"
+)
 }
 \arguments{
-\item{alg}{(Character) Choose between panda, lioness, condor, alpaca, and monster}
+\item{algorithm}{(Character) Choose between panda, lioness, condor, alpaca, and monster}
 
-\item{exp}{(Object) Name of expression data frame object generated using read_gene() or filt_gene()}
+\item{geneExp}{(Object) Name of expression data frame object generated using read_gene() or filter_gene()}
 
-\item{base}{(Character) Gene expression base group file path}
+\item{basePath}{(Character) Gene expression base group file path}
 
-\item{comp}{(Character) Gene expression comparison group file path}
+\item{compPath}{(Character) Gene expression comparison group file path}
+
+\item{startSample}{(Numeric) Value to indicate lionessPy first sample - default is 1}
+
+\item{endSample}{(Numeric) Value to indicate lionessPy last sample - default is 'None'}
 }
 \value{
 Returns output of selected algorithm to be used for visualization or second algorithm
@@ -27,9 +38,8 @@ In order to run alpaca or monster, split_gene() must be run first
 \examples{
 \dontrun{
 library(processNetZoo)
-expression <- read_gene('expression_test.csv','gene')
-design <- split_gene(expression,'metadata.csv','SUBJECT_ID','RECURRENCE_ANY')
-result <- select_NetZoo('alpaca',expression,'expression_base.txt','expression_comp.txt')
+expression <- read_gene('extdata/expression_test.csv','gene')
+result <- select_NetZoo('lionessPy',expression,'expression.txt',startSample=11,endSample=20)
 }
 }
 \author{

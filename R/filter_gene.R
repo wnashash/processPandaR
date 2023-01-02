@@ -1,14 +1,14 @@
 #' @title Filter Gene Expression File
 #' @description A simple function for additional gene expression filtering
-#' @param exp (Object) Name of expression data frame object generated using read_gene()
-#' @param filt (Character) Filter option for additional filtering - either sum, var, or both
-#' @param thresh Numeric value between 0 and 1 for variance filter with default 0.3
+#' @param geneExp (Object) Name of expression data frame object generated using read_gene()
+#' @param filter (Character) Filter option for additional filtering - either sum, var, or both
+#' @param threshold Numeric value between 0 and 1 for variance filter with default 0.1
 #' @return Returns filtered gene expression data frame to global env and writes to working directory
 #' @author Walid Nashashibi (\url{https://github.com/wnashash/})
 #' @examples
 #' \dontrun{
 #' library(processNetZoo)
-#' expression <- read_gene('expression_test.csv','gene')
+#' expression <- read_gene('extdata/expression_test.csv','gene')
 #' generate_histogram(expression,'both')
 #' filtered <- filter_gene(expression,'sum')
 #' }
@@ -16,30 +16,30 @@
 #' @import utils
 #' @export
 #'
-filter_gene <- function(exp,filt,thresh=NULL) {
+filter_gene <- function(geneExp,filter,threshold=NULL) {
 
-  if(filt=='sum') {
+  if(filter=='sum') {
 
-    expData <- exp[rowSums(exp) >= 10,]
+    expData <- geneExp[rowSums(geneExp) >= 10,]
 
-  } else if(filt=='var') {
+  } else if(filter=='var') {
 
-    if(is.null(thresh)) {
-      thr <- 0.3
+    if(is.null(threshold)) {
+      thr <- 0.1
     } else {
-      thr <- thresh
+      thr <- threshold
     }
 
-    expData <- exp[genefilter::rowSds(as.matrix(exp)) > thr*rowMeans(as.matrix(exp)),]
+    expData <- geneExp[genefilter::rowSds(as.matrix(geneExp)) > thr*rowMeans(as.matrix(geneExp)),]
 
-  } else if(filt=='both') {
+  } else if(filter=='both') {
 
-    expData <- exp[rowSums(exp) >= 10,]
+    expData <- geneExp[rowSums(geneExp) >= 10,]
 
-    if(is.null(thresh)) {
-      thr <- 0.3
+    if(is.null(threshold)) {
+      thr <- 0.1
     } else {
-      thr <- thresh
+      thr <- threshold
     }
 
     expData <- expData[genefilter::rowSds(as.matrix(expData)) > thr*rowMeans(as.matrix(expData)),]

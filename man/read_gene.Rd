@@ -20,7 +20,7 @@ A simple function to read and clean gene expression data
 \examples{
 \dontrun{
 library(processNetZoo)
-expression <- read_gene('expression_test.csv','gene')
+expression <- read_gene('extdata/expression_test.csv','gene')
 }
 }
 \author{
