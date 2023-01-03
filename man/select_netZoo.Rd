@@ -38,7 +38,8 @@ In order to run alpaca or monster, split_gene() must be run first
 \examples{
 \dontrun{
 library(processNetZoo)
-expression <- read_gene('extdata/expression_test.csv','gene')
+exp_path <- system.file("extdata", "expression_test.csv", package = "processNetZoo", mustWork = TRUE)
+expression <- read_gene(exp_path,'gene')
 result <- select_NetZoo('lionessPy',expression,'expression.txt',startSample=11,endSample=20)
 }
 }

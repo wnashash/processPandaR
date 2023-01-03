@@ -7,7 +7,8 @@
 #' @examples
 #' \dontrun{
 #' library(processNetZoo)
-#' expression <- read_gene('extdata/expression_test.csv','gene')
+#' exp_path <- system.file("extdata", "expression_test.csv", package = "processNetZoo", mustWork = TRUE)
+#' expression <- read_gene(exp_path,'gene')
 #' }
 #' @import tools
 #' @import data.table
@@ -46,4 +47,3 @@ read_gene <- function(path, geneName){
   return(expData)
 
 }
-

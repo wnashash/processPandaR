@@ -12,7 +12,8 @@
 #' @examples
 #' \dontrun{
 #' library(processNetZoo)
-#' expression <- read_gene('extdata/expression_test.csv','gene')
+#' exp_path <- system.file("extdata", "expression_test.csv", package = "processNetZoo", mustWork = TRUE)
+#' expression <- read_gene(exp_path,'gene')
 #' result <- select_NetZoo('lionessPy',expression,'expression.txt',startSample=11,endSample=20)
 #' }
 #' @import netZooR
@@ -21,11 +22,14 @@
 #'
 select_NetZoo <- function(algorithm,geneExp,basePath,compPath=NULL,startSample=1,endSample='None') {
 
+  motif_path <- system.file("extdata", "OV_Motif.txt", package = "processNetZoo", mustWork = TRUE)
+  ppi_path <- system.file("extdata", "OV_PPI.txt", package = "processNetZoo", mustWork = TRUE)
+
   if(algorithm == 'pandaPy') {
 
     resultPanda <- netZooR::pandaPy(basePath,
-                                    "extdata/OV_Motif.txt",
-                                    "extdata/OV_PPI.txt",
+                                    motif_path,
+                                    ppi_path,
                                     save_tmp = FALSE,
                                     modeProcess = "intersection")$panda
 
@@ -34,8 +38,8 @@ select_NetZoo <- function(algorithm,geneExp,basePath,compPath=NULL,startSample=1
   } else if(algorithm == 'lionessPy') {
 
     resultLion <- netZooR::lionessPy(basePath,
-                                     "extdata/OV_Motif.txt",
-                                     "extdata/OV_PPI.txt",
+                                     motif_path,
+                                     ppi_path,
                                      save_tmp = FALSE,
                                      modeProcess = "intersection",
                                      start_sample = startSample,
@@ -57,8 +61,8 @@ select_NetZoo <- function(algorithm,geneExp,basePath,compPath=NULL,startSample=1
   } else if(algorithm == 'condor') {
 
     resultPanda <- netZooR::pandaPy(basePath,
-                                    "extdata/OV_Motif.txt",
-                                    "extdata/OV_PPI.txt",
+                                    motif_path,
+                                    ppi_path,
                                     save_tmp = FALSE,
                                     modeProcess = "intersection")$panda
 
@@ -69,14 +73,14 @@ select_NetZoo <- function(algorithm,geneExp,basePath,compPath=NULL,startSample=1
   } else if(algorithm == 'alpaca') {
 
     controlPanda <- netZooR::pandaPy(basePath,
-                                     "extdata/OV_Motif.txt",
-                                     "extdata/OV_PPI.txt",
+                                     motif_path,
+                                     ppi_path,
                                      save_tmp = FALSE,
                                      modeProcess = "intersection")$panda
 
     treatPanda   <- netZooR::pandaPy(compPath,
-                                     "extdata/OV_Motif.txt",
-                                     "extdata/OV_PPI.txt",
+                                     motif_path,
+                                     ppi_path,
                                      save_tmp = FALSE,
                                      modeProcess = "intersection")$panda
 
@@ -88,7 +92,7 @@ select_NetZoo <- function(algorithm,geneExp,basePath,compPath=NULL,startSample=1
 
   } else if(algorithm == 'monster') {
 
-    motif <- data.table::fread("extdata/OV_Motif.txt",
+    motif <- data.table::fread(motif_path,
                                sep="auto",
                                header=FALSE,
                                stringsAsFactors=FALSE)
@@ -108,4 +112,3 @@ select_NetZoo <- function(algorithm,geneExp,basePath,compPath=NULL,startSample=1
   return(result)
 
 }
-

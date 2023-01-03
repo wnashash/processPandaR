@@ -20,7 +20,8 @@ A simple function to generate histogram of row sums and row variance
 \examples{
 \dontrun{
 library(processNetZoo)
-expression <- read_gene('extdata/expression_test.csv','gene')
+exp_path <- system.file("extdata", "expression_test.csv", package = "processNetZoo", mustWork = TRUE)
+expression <- read_gene(exp_path,'gene')
 generate_histogram(expression,'sum')
 }
 }

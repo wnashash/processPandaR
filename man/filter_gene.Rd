@@ -22,7 +22,8 @@ A simple function for additional gene expression filtering
 \examples{
 \dontrun{
 library(processNetZoo)
-expression <- read_gene('extdata/expression_test.csv','gene')
+exp_path <- system.file("extdata", "expression_test.csv", package = "processNetZoo", mustWork = TRUE)
+expression <- read_gene(exp_path,'gene')
 generate_histogram(expression,'both')
 filtered <- filter_gene(expression,'sum')
 }

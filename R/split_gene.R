@@ -9,10 +9,12 @@
 #' @examples
 #' \dontrun{
 #' library(processNetZoo)
-#' expression <- read_gene('extdata/expression_test.csv','gene')
+#' exp_path <- system.file("extdata", "expression_test.csv", package = "processNetZoo", mustWork = TRUE)
+#' expression <- read_gene(exp_path,'gene')
 #' generate_histogram(expression,'both')
 #' filtered <- filter_gene(expression,'sum')
-#' design <- split_gene(filtered,'extdata/metadata.csv','SUBJECT_ID','RECURRENCE_ANY')
+#' meta_path <- system.file("extdata", "metadata.csv", package = "processNetZoo", mustWork = TRUE)
+#' design <- split_gene(filtered,meta_path,'SUBJECT_ID','RECURRENCE_ANY')
 #' }
 #' @import data.table
 #' @import utils
