@@ -1,14 +1,20 @@
 #' @title Filter Gene Expression File
 #' @description A simple function for additional gene expression filtering
-#' @param geneExp (Object) Name of expression data frame object generated using read_gene()
+#' @param expr (Object) Name of expression data frame object generated using read_gene()
 #' @param filter (Character) Filter option for additional filtering - either sum, var, or both
 #' @param threshold Numeric value between 0 and 1 for variance filter with default 0.1
+#' @param expr_file_out (Character) Filename of the base group to write out results to.  No file will
+#' be written when NULL.
 #' @return Returns filtered gene expression data frame to global env and writes to working directory
 #' @author Walid Nashashibi (\url{https://github.com/wnashash/})
 #' @examples
 #' \dontrun{
 #' library(processNetZoo)
-#' exp_path <- system.file("extdata", "expression_test.csv", package = "processNetZoo", mustWork = TRUE)
+#' exp_path <- system.file("extdata",
+#'      "expression_test.csv",
+#'      package = "processNetZoo",
+#'      mustWork = TRUE)
+#'
 #' expression <- read_gene(exp_path,'gene')
 #' generate_histogram(expression,'both')
 #' filtered <- filter_gene(expression,'sum')
@@ -17,11 +23,14 @@
 #' @import utils
 #' @export
 #'
-filter_gene <- function(geneExp,filter,threshold=NULL) {
+filter_gene <- function(expr,
+                        filter,
+                        threshold=NULL,
+                        expr_file_out = 'expression.txt') {
 
   if(filter=='sum') {
 
-    expData <- geneExp[rowSums(geneExp) >= 10,]
+    expData <- expr[rowSums(expr) >= 10,]
 
   } else if(filter=='var') {
 
@@ -31,11 +40,11 @@ filter_gene <- function(geneExp,filter,threshold=NULL) {
       thr <- threshold
     }
 
-    expData <- geneExp[genefilter::rowSds(as.matrix(geneExp)) > thr*rowMeans(as.matrix(geneExp)),]
+    expData <- expr[genefilter::rowSds(as.matrix(expr)) > thr*rowMeans(as.matrix(expr)),]
 
   } else if(filter=='both') {
 
-    expData <- geneExp[rowSums(geneExp) >= 10,]
+    expData <- expr[rowSums(expr) >= 10,]
 
     if(is.null(threshold)) {
       thr <- 0.1
@@ -51,8 +60,10 @@ filter_gene <- function(geneExp,filter,threshold=NULL) {
 
   }
 
-  utils::write.table(expData, file="expression.txt",
-                     row.names=TRUE, col.names=FALSE, sep="\t", quote=F)
+  if(!is.null(expr_file_out)){
+    utils::write.table(expData, file = expr_file_out,
+                       row.names=TRUE, col.names=FALSE, sep="\t", quote=F)
+  }
 
   return(expData)
 

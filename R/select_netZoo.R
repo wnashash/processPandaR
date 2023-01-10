@@ -1,56 +1,104 @@
 #' @title Select NetZooR Algorithm
 #' @description A simple function to run NetZooR algorithm of choice
-#' @param algorithm (Character) Choose between panda, lioness, condor, alpaca, and monster
-#' @param geneExp (Object) Name of expression data frame object generated using read_gene() or filter_gene()
-#' @param basePath (Character) Gene expression base group file path
-#' @param compPath (Character) Gene expression comparison group file path
-#' @param startSample (Numeric) Value to indicate lionessPy first sample - default is 1
-#' @param endSample (Numeric) Value to indicate lionessPy last sample - default is 'None'
+#' @param algorithm (Character) Choose between 'pandaPy', 'lionessPy', 'condor', 'alpaca', and 'monster'
+#' @param expr_file (Character) Gene expression base group filepath
+#' @param expr (Object) Name of expression data.frame object generated using `read_gene()` or `filter_gene()`
+#' @param motif_file (Character) value indicating which motif data to use.  Options include NULL for Pearson correlation
+#' matrix, 'default' for built-in data, or a user-specified filepath.
+#' @param ppi_file (Character) value indicating which protein-protein interaction data to use.  Options include
+#' NULL for no additional interaction, 'default' for built-in data, or a user-specified filepath.
+#' @param comp_file (Character) Gene expression comparison group filepath for 'alpaca' networks
+#' @param start_sample (Numeric) Value to indicate 'lionessPy' first sample - default is 1
+#' @param end_sample (Numeric) Value to indicate 'lionessPy' last sample - default is 'None'
+#' @param design (Numeric) Binary vector for 'monster' algorithm case control partition.
 #' @details In order to run alpaca or monster, split_gene() must be run first
 #' @return Returns output of selected algorithm to be used for visualization or second algorithm
 #' @author Walid Nashashibi (\url{https://github.com/wnashash/})
 #' @examples
 #' \dontrun{
 #' library(processNetZoo)
-#' exp_path <- system.file("extdata", "expression_test.csv", package = "processNetZoo", mustWork = TRUE)
+#'
+#' # -- pandaPy --
+#' exp_path <- system.file("extdata",
+#'      "expr4_matched.txt",
+#'      package = "netZooR",
+#'      mustWork = TRUE)
+#'
+#' result <- select_NetZoo(
+#'      algorithm   = 'pandaPy',
+#'      expr_file   = exp_path,
+#'      motif_file  = NULL,
+#'      ppi_file    = NULL
+#' )
+#'
+#'
+#' # -- lionessPy --
+#' exp_path <- system.file("extdata",
+#'      "expression_test.csv",
+#'      package = "processNetZoo",
+#'      mustWork = TRUE)
+#'
 #' expression <- read_gene(exp_path,'gene')
-#' result <- select_NetZoo('lionessPy',expression,'expression.txt',startSample=11,endSample=20)
+#'
+#' result <- select_NetZoo(
+#'      algorithm    = 'lionessPy',
+#'      expr         = expression,
+#'      expr_file    = 'expression.txt',
+#'      start_sample = 11,
+#'      end_sample   = 20
+#')
 #' }
 #' @import netZooR
 #' @import data.table
 #' @export
 #'
-select_NetZoo <- function(algorithm,geneExp,basePath,compPath=NULL,startSample=1,endSample='None') {
+select_NetZoo <- function(algorithm,
+                          expr_file    = NULL,
+                          expr         = NULL,
+                          motif_file   = 'default',
+                          ppi_file     = 'default',
+                          comp_file    = NULL,
+                          start_sample = 1,
+                          end_sample   = 'None',
+                          design       = NULL) {
 
-  motif_path <- system.file("extdata", "OV_Motif.txt", package = "processNetZoo", mustWork = TRUE)
-  ppi_path <- system.file("extdata", "OV_PPI.txt", package = "processNetZoo", mustWork = TRUE)
+  # set up motif and PPI files
+  if(!is.null(motif_file) && motif_file == 'default'){
+    motif_file <- system.file("extdata", "OV_Motif.txt", package = "processNetZoo", mustWork = TRUE)
+  }
+
+  if(!is.null(ppi_file) && ppi_file == 'default'){
+    ppi_file <- system.file("extdata", "OV_PPI.txt", package = "processNetZoo", mustWork = TRUE)
+  }
 
   if(algorithm == 'pandaPy') {
 
-    resultPanda <- netZooR::pandaPy(basePath,
-                                    motif_path,
-                                    ppi_path,
-                                    save_tmp = FALSE,
+    resultPanda <- netZooR::pandaPy(expr_file   = expr_file,
+                                    motif_file  = motif_file,
+                                    ppi_file    = ppi_file,
+                                    save_tmp    = FALSE,
                                     modeProcess = "intersection")$panda
 
     result <- resultPanda
 
   } else if(algorithm == 'lionessPy') {
 
-    resultLion <- netZooR::lionessPy(basePath,
-                                     motif_path,
-                                     ppi_path,
-                                     save_tmp = FALSE,
-                                     modeProcess = "intersection",
-                                     start_sample = startSample,
-                                     end_sample = endSample)
+    resultLion <- netZooR::lionessPy(expr_file    = expr_file,
+                                     motif_file   = motif_file,
+                                     ppi_file     = ppi_file,
+                                     save_tmp     = FALSE,
+                                     modeProcess  = "intersection",
+                                     start_sample = start_sample,
+                                     end_sample   = end_sample,
+                                     save_single_network = FALSE,
+                                     save_dir = NULL)
 
     result <- resultLion[c(3:ncol(resultLion))]
 
-    if(endSample == 'None') {
-      geneTruncated <- geneExp[c(startSample:ncol(geneExp))]
+    if(end_sample == 'None') {
+      geneTruncated <- expr[c(start_sample:ncol(expr))]
     } else {
-      geneTruncated <- geneExp[c(startSample:endSample)]
+      geneTruncated <- expr[c(start_sample:end_sample)]
     }
 
     colnames(result) <- colnames(geneTruncated)
@@ -60,10 +108,10 @@ select_NetZoo <- function(algorithm,geneExp,basePath,compPath=NULL,startSample=1
 
   } else if(algorithm == 'condor') {
 
-    resultPanda <- netZooR::pandaPy(basePath,
-                                    motif_path,
-                                    ppi_path,
-                                    save_tmp = FALSE,
+    resultPanda <- netZooR::pandaPy(expr_file   = expr_file,
+                                    motif_file  = motif_file,
+                                    ppi_file    = ppi_file,
+                                    save_tmp    = FALSE,
                                     modeProcess = "intersection")$panda
 
     resultCondor <- netZooR::pandaToCondorObject(resultPanda)
@@ -72,16 +120,16 @@ select_NetZoo <- function(algorithm,geneExp,basePath,compPath=NULL,startSample=1
 
   } else if(algorithm == 'alpaca') {
 
-    controlPanda <- netZooR::pandaPy(basePath,
-                                     motif_path,
-                                     ppi_path,
-                                     save_tmp = FALSE,
+    controlPanda <- netZooR::pandaPy(expr_file   = expr_file,
+                                     motif_file  = motif_file,
+                                     ppi_file    = ppi_file,
+                                     save_tmp    = FALSE,
                                      modeProcess = "intersection")$panda
 
-    treatPanda   <- netZooR::pandaPy(compPath,
-                                     motif_path,
-                                     ppi_path,
-                                     save_tmp = FALSE,
+    treatPanda   <- netZooR::pandaPy(expr_file   = comp_file,
+                                     motif_file  = motif_file,
+                                     ppi_file    = ppi_file,
+                                     save_tmp    = FALSE,
                                      modeProcess = "intersection")$panda
 
     tableNet <- merge(controlPanda[,-3],treatPanda[,-3],by = c("TF","Gene"))
@@ -92,14 +140,14 @@ select_NetZoo <- function(algorithm,geneExp,basePath,compPath=NULL,startSample=1
 
   } else if(algorithm == 'monster') {
 
-    motif <- data.table::fread(motif_path,
+    motif <- data.table::fread(motif_file,
                                sep="auto",
                                header=FALSE,
                                stringsAsFactors=FALSE)
 
     motif <- data.table::setDF(motif)
 
-    monsterResult <- netZooR::monster(geneExp,
+    monsterResult <- netZooR::monster(expr,
                                       design,
                                       motif,
                                       nullPerms = 10,
