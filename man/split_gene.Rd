@@ -4,16 +4,29 @@
 \alias{split_gene}
 \title{Split Gene Expression File Using Metadata}
 \usage{
-split_gene(geneExp, metaPath, simpleID, treatment)
+split_gene(
+  exp,
+  metadata_file,
+  id_column,
+  treatment_column,
+  expr_file_out = "expression_base.txt",
+  comp_file_out = "expression_comp.txt"
+)
 }
 \arguments{
-\item{geneExp}{(Object) Name of expression data frame object generated using read_gene() or filter_gene()}
+\item{exp}{(Object) Name of expression data frame object generated using read_gene() or filter_gene()}
 
-\item{metaPath}{(Character) Metadata file path}
+\item{metadata_file}{(Character) Metadata file path}
 
-\item{simpleID}{(Character) Metadata column with samples/IDs found in gene expression data}
+\item{id_column}{(Character) Metadata column with samples/IDs found in gene expression data}
 
-\item{treatment}{(Character) Metadata column that designates control and treatment samples/IDs}
+\item{treatment_column}{(Character) Metadata column that designates control and treatment samples/IDs}
+
+\item{expr_file_out}{(Character) Filename of the base group to write out results to.  No file will
+be written when NULL.}
+
+\item{comp_file_out}{(Character) Filename of the comparison group to write out results to.  No file
+will be written when NULL.}
 }
 \value{
 Returns design and writes control (base) and treatment (comp) to working directory
@@ -24,11 +37,25 @@ A simple function to split gene expression data, using metadata treatment column
 \examples{
 \dontrun{
 library(processNetZoo)
-exp_path <- system.file("extdata", "expression_test.csv", package = "processNetZoo", mustWork = TRUE)
+
+exp_path <- system.file("extdata",
+     "expression_test.csv",
+     package = "processNetZoo",
+     mustWork = TRUE
+     )
+
 expression <- read_gene(exp_path,'gene')
+
 generate_histogram(expression,'both')
+
 filtered <- filter_gene(expression,'sum')
-meta_path <- system.file("extdata", "metadata.csv", package = "processNetZoo", mustWork = TRUE)
+
+meta_path <- system.file("extdata",
+     "metadata.csv",
+     package = "processNetZoo",
+     mustWork = TRUE
+     )
+
 design <- split_gene(filtered,meta_path,'SUBJECT_ID','RECURRENCE_ANY')
 }
 }

@@ -4,12 +4,15 @@
 \alias{read_gene}
 \title{Read Gene Expression File}
 \usage{
-read_gene(path, geneName)
+read_gene(path, gene_column, expr_file_out = "expression.txt")
 }
 \arguments{
 \item{path}{(Character) Gene expression file path, including file extension}
 
-\item{geneName}{(Character) Name used for gene feature column in gene expression data}
+\item{gene_column}{(Character) Name used for gene feature column in gene expression data}
+
+\item{expr_file_out}{(Character) Optional argument to save output in working directory.  No
+file will be saved when output_file is NULL.}
 }
 \value{
 Returns clean gene expression data frame to global env and writes to working directory
@@ -20,7 +23,11 @@ A simple function to read and clean gene expression data
 \examples{
 \dontrun{
 library(processNetZoo)
-exp_path <- system.file("extdata", "expression_test.csv", package = "processNetZoo", mustWork = TRUE)
+exp_path <- system.file("extdata",
+     "expression_test.csv",
+     package = "processNetZoo",
+     mustWork = TRUE)
+
 expression <- read_gene(exp_path,'gene')
 }
 }

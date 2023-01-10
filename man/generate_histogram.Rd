@@ -4,10 +4,10 @@
 \alias{generate_histogram}
 \title{Generate Histogram for Variance Visualization}
 \usage{
-generate_histogram(geneExp, filter)
+generate_histogram(exp, filter = "both")
 }
 \arguments{
-\item{geneExp}{(Object) Name of expression data frame object generated using read_gene()}
+\item{exp}{(Object) Name of expression data frame object generated using read_gene()}
 
 \item{filter}{(Character) Filter option for visualization - either sum, var, or both}
 }
@@ -20,8 +20,13 @@ A simple function to generate histogram of row sums and row variance
 \examples{
 \dontrun{
 library(processNetZoo)
-exp_path <- system.file("extdata", "expression_test.csv", package = "processNetZoo", mustWork = TRUE)
+exp_path <- system.file("extdata",
+     "expression_test.csv",
+     package = "processNetZoo",
+     mustWork = TRUE)
+
 expression <- read_gene(exp_path,'gene')
+
 generate_histogram(expression,'sum')
 }
 }
